@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { useId } from "react";
+import { checkAndGetUserId, generateJoinCode } from "./utils";
 
 
 export const get = query({
@@ -70,19 +71,3 @@ export const getById = query({
       return await ctx.db.get(args.id);
   },
 })
-
-const checkAndGetUserId = async (ctx: any) => {
-  const userId = await getAuthUserId(ctx);
-  if (!userId) {
-    throw Error("Unauthorized")    
-  }
-  return userId;
-}
-
-const generateJoinCode = () => {
-  const code = Array.from(
-    {length: 6},
-    () => "0123456789abcdefghijklmnopqrstuvwxyz"[Math.floor(Math.random() * 36)]
-  ).join("");
-  return code;
-}
