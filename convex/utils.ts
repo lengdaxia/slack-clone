@@ -1,8 +1,8 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { QueryCtx } from "./_generated/server";
+import { MutationCtx, QueryCtx } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 
-export const checkAndGetUserId = async (ctx: any) => {
+export const checkAndGetUserId = async (ctx: QueryCtx | MutationCtx) => {
   const userId = await getAuthUserId(ctx);
   if (!userId) {
     throw Error("Unauthorized")    

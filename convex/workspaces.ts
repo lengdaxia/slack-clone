@@ -122,7 +122,10 @@ export const remove = mutation({
 export const getById = query({
   args: { id: v.id("workspaces") },
   handler: async (ctx, args) => {
-    const userId = await checkAndGetUserId(ctx);
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw Error("Unauthorized")    
+    }
 
     const member = await ctx.db
       .query("members")

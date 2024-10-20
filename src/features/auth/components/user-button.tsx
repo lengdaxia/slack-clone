@@ -18,8 +18,9 @@ export const UserButton = () => {
   const router = useRouter();
 
   const handleSignOut = () => {
-    signOut().finally(() => {
+    signOut().then(() => {
       router.replace("/");
+    }).finally(() => {
     });
   };
 
