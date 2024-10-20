@@ -1,4 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { QueryCtx } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
 
 export const checkAndGetUserId = async (ctx: any) => {
   const userId = await getAuthUserId(ctx);
@@ -14,4 +16,8 @@ export const generateJoinCode = () => {
     () => "0123456789abcdefghijklmnopqrstuvwxyz"[Math.floor(Math.random() * 36)]
   ).join("");
   return code;
+}
+
+export const populateUser = async (ctx: QueryCtx, id:Id<"users">) => {
+    return await ctx.db.get(id);
 }
