@@ -1,6 +1,5 @@
 import { useQuery } from "convex/react"
 import { api } from "../../../../convex/_generated/api"
-import { useWorkspaceId } from "@/app/workspace/hooks/use-workspace-id";
 import { Id } from "../../../../convex/_generated/dataModel";
 
 interface UseGetCurrentMemberProps {

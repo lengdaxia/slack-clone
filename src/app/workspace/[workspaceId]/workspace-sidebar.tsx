@@ -1,5 +1,5 @@
 import { useCurrentMember } from "@/features/members/api/use-current-member";
-import { useWorkspaceId } from "../hooks/use-workspace-id";
+import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
 import { useGetWorkspace } from "@/features/workspaces/api/use-get-workspace";
 import { AppLoader } from "@/components/app-loader";
 import { EmptyTip } from "@/components/empty-tip";
