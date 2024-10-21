@@ -1,14 +1,13 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { useId } from "react";
 import { checkAndGetUserId, generateJoinCode, getUserMember } from "./utils";
 
 export const get = query({
   args: {},
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx);
-    if (!useId) {
+    if (!userId) {
       return [];
     }
 
@@ -27,6 +26,25 @@ export const get = query({
     }
 
     return workspaces;
+  },
+});
+
+export const getPublicInfo = query({
+  args: {workspaceId: v.id("workspaces")},
+  handler: async (ctx, args) => {
+    
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      return null;
+    }
+    const member = await getUserMember(ctx, args.workspaceId, userId);
+
+    const worksapce = await ctx.db.get(args.workspaceId);
+    
+    return {
+      name: worksapce?.name,
+      isMember: !!member
+    }
   },
 });
 

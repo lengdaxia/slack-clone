@@ -1,11 +1,53 @@
 "use client";
 
+import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { AppLoader } from "@/components/app-loader";
 import { Button } from "@/components/ui/button";
+import { useGetWorkspacePublicInfo } from "@/features/workspaces/api/use-get-workspace-public-Info";
+import { useJoinMember } from "@/features/workspaces/api/use-join-member";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
 import VerificationInput from "react-verification-input";
+import { toast } from "sonner";
 
 const JoinPage = () => {
+  const router = useRouter();
+  const workspaceId = useWorkspaceId();
+  const { data, isLoading } = useGetWorkspacePublicInfo({ workspaceId });
+  const { mutate: joinWorkspace, isPending } = useJoinMember();
+
+  const isMember = useMemo(() => data?.isMember, [data?.isMember]);
+  useEffect(() => {
+    if (isMember) {
+      router.replace("/");
+    }
+  }, [workspaceId, isMember, router]);
+
+  const handleJoin = (value: string) => {
+    joinWorkspace(
+      {
+        workspaceId,
+        joinCode: value,
+      },
+      {
+        onSuccess() {
+          router.replace(`/workspace/${workspaceId}`);
+          toast.success("Workspace joined");
+        },
+        onError(error) {
+          toast.error(`Failed to join workspace ${error.message}`);
+        },
+      }
+    );
+  };
+
+  if (isLoading) {
+    return <AppLoader />;
+  }
+
   return (
     <div className="h-full flex flex-col items-center justify-center bg-white gap-y-8 p-8 rounded-md shadow-md">
       <Image src={"/logo.svg"} width={60} height={60} alt={"logo"}></Image>
@@ -18,9 +60,13 @@ const JoinPage = () => {
         </div>
       </div>
       <VerificationInput
+        onComplete={handleJoin}
         length={6}
         classNames={{
-          container: "flex gap-x-2",
+          container: cn(
+            "flex gap-x-2",
+            isPending && "opcity-50 cursor-not-allow"
+          ),
           character:
             "uppercase h-auto rounded-md border-gray-300  text-gray-500 flex items-center justify-center font-medium text-lg",
           characterInactive: "text-muted",
@@ -30,8 +76,8 @@ const JoinPage = () => {
       />
 
       <div className="flex gap-x-4">
-        <Button size={"lg"} variant={"outline"} asChild>
-            <Link href={"/"}>Back to home</Link>
+        <Button disabled={isPending} size={"lg"} variant={"outline"} asChild>
+          <Link href={"/"}>Back to home</Link>
         </Button>
       </div>
     </div>
