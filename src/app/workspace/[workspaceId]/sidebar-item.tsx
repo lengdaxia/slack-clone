@@ -23,8 +23,8 @@ const sidebarItemVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "default"
-    }
+      variant: "default",
+    },
   }
 );
 
@@ -36,9 +36,12 @@ export const SidebarItem = ({
 }: SidebarItemProps) => {
   const workspaceId = useWorkspaceId();
   return (
-    <Button variant={"transparent"}
-      className={cn(sidebarItemVariants({variant}))}
-      size={"sm"} asChild>
+    <Button
+      variant={"transparent"}
+      className={cn(sidebarItemVariants({ variant }))}
+      size={"sm"}
+      asChild
+    >
       <Link href={`/workspace/${workspaceId}/channel/${id}`}>
         <Icon className="size-3.5 mr-0 shrink-0" />
         <p className="truncate text-sm">{label}</p>

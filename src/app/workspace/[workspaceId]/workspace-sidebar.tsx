@@ -34,7 +34,7 @@ export const WorkspaceSidebar = () => {
     });
 
   if (workspaceLoading || memberLoading) {
-    return <AppLoader />;
+    return <AppLoader bgColor="bg-[#5E2C5F]" loaderColor="text-white" />;
   }
 
   if (!workspace || !member) {
@@ -64,7 +64,9 @@ export const WorkspaceSidebar = () => {
       <WorkspaceSection
         label="Channels"
         hint="Create new channel"
-        onNew={member.role === "admin" ? () => setOpenNewChannel(true) : undefined}
+        onNew={
+          member.role === "admin" ? () => setOpenNewChannel(true) : undefined
+        }
       >
         {channels?.map((item) => (
           <SidebarItem
