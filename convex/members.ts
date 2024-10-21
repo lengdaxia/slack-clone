@@ -1,18 +1,13 @@
 import { v } from "convex/values";
 import { query } from "./_generated/server";
-import { checkAndGetUserId, populateUser } from "./utils";
+import { checkAndGetUserId, getUserMember, populateUser } from "./utils";
 
 export const current = query({
   args: { workspaceId: v.id("workspaces") },
   handler: async (ctx, args) => {
     const userId = await checkAndGetUserId(ctx);
 
-    const member = await ctx.db
-      .query("members")
-      .withIndex("by_workspace_id_user_id", (q) =>
-        q.eq("workspaceId", args.workspaceId).eq("userId", userId)
-      )
-      .unique();
+    const member = await getUserMember(ctx, args.workspaceId, userId);
 
     if (!member) {
       return null;
@@ -26,12 +21,7 @@ export const get = query({
   handler: async (ctx, args) => {
     const userId = await checkAndGetUserId(ctx);
 
-    const member = await ctx.db
-      .query("members")
-      .withIndex("by_workspace_id_user_id", (q) =>
-        q.eq("workspaceId", args.workspaceId).eq("userId", userId)
-      )
-      .unique();
+    const member = await getUserMember(ctx, args.workspaceId, userId);
 
     if (!member) {
       return [];

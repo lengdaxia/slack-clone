@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { checkAndGetUserId } from "./utils";
+import { checkAndGetUserId, getUserMember } from "./utils";
 
 export const get = query({
   args: {
@@ -9,12 +9,7 @@ export const get = query({
   handler: async (ctx, args) => {
     const userId = await checkAndGetUserId(ctx);
 
-    const member = await ctx.db
-      .query("members")
-      .withIndex("by_workspace_id_user_id", (q) =>
-        q.eq("workspaceId", args.workspaceId).eq("userId", userId)
-      )
-      .unique();
+    const member = await getUserMember(ctx, args.workspaceId, userId);
 
     if (!member) {
       return [];
@@ -39,12 +34,7 @@ export const create = mutation({
   handler: async (ctx, args) => {
     const userId = await checkAndGetUserId(ctx);
 
-    const member = await ctx.db
-      .query("members")
-      .withIndex("by_workspace_id_user_id", (q) =>
-        q.eq("workspaceId", args.workspaceId).eq("userId", userId)
-      )
-      .unique();
+    const member = await getUserMember(ctx, args.workspaceId, userId);
 
     if (!member || member.role !== "admin") {
       throw new Error("Unauthrized");
