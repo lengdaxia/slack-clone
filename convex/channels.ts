@@ -26,6 +26,19 @@ export const get = query({
   },
 });
 
+export const getById = query({
+  args: { channelId: v.id("channels") },
+  handler: async (ctx, args) => {
+    await checkAndGetUserId(ctx);
+    const channel = await ctx.db.get(args.channelId);
+
+    if (!channel) {
+      return null;
+    }
+    return channel;
+  },
+});
+
 export const create = mutation({
   args: {
     name: v.string(),
@@ -47,5 +60,62 @@ export const create = mutation({
     });
 
     return channelId;
+  },
+});
+
+export const update = mutation({
+  args: {
+    name: v.string(),
+    channelId: v.id("channels"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await checkAndGetUserId(ctx);
+
+    const channel = await ctx.db.get(args.channelId);
+
+    if (!channel) {
+      throw new Error("Channel not found");
+    }
+
+    const member = await getUserMember(ctx, channel.workspaceId, userId);
+
+    if (!member || member.role !== "admin") {
+      throw new Error("Unauthrized");
+    }
+
+    const channelName = args.name.replace(/\s+/g, "-");
+    const channelId = await ctx.db.patch(args.channelId, {
+      name: channelName,
+    });
+
+    return channelId;
+  },
+});
+
+export const remove = mutation({
+  args: {
+    channelId: v.id("channels"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await checkAndGetUserId(ctx);
+
+    const channel = await ctx.db.get(args.channelId);
+
+    if (!channel) {
+      throw new Error("Channel not found");
+    }
+
+    const member = await getUserMember(ctx, channel.workspaceId, userId);
+
+    if (!member || member.role !== "admin") {
+      throw new Error("Unauthrized");
+    }
+
+    // TODO: delete assiciated conversations
+
+    // delete channel
+    await ctx.db.delete(args.channelId);
+
+    return args.channelId;
   },
 });
