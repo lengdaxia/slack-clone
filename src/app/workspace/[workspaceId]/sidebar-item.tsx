@@ -40,7 +40,7 @@ export const SidebarItem = ({
       className={cn(sidebarItemVariants({variant}))}
       size={"sm"} asChild>
       <Link href={`/workspace/${workspaceId}/channel/${id}`}>
-        <Icon className="size-3.5 mr-1 shrink-0" />
+        <Icon className="size-3.5 mr-0 shrink-0" />
         <p className="truncate text-sm">{label}</p>
       </Link>
     </Button>

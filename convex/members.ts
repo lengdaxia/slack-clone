@@ -65,7 +65,7 @@ export const joinMember = mutation({
     }
 
     // check if joincode matches
-    const joincodeNotValid = workspace.joinCode !== args.joinCode;
+    const joincodeNotValid = workspace.joinCode !== args.joinCode.toLowerCase();
     if (joincodeNotValid) {
         throw new Error("Join code not valid, please confirm again")
     }
