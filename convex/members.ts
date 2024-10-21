@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { checkAndGetUserId, getUserMember, populateUser } from "./utils";
 
 export const current = query({
@@ -48,3 +48,42 @@ export const get = query({
     return memberUsers;
   },
 });
+
+export const joinMember = mutation({
+  args: {
+    workspaceId: v.id("workspaces"),
+    joinCode: v.string()
+  },
+  handler: async (ctx, args) => {
+    const userId = await checkAndGetUserId(ctx);
+    // check workspcae exist
+    const workspace = await ctx.db.query("workspaces")
+    .withIndex("by_id", (q) => q.eq("_id", args.workspaceId))
+    .unique();
+    if (!workspace) {
+      throw new Error("Workspace not found")
+    }
+
+    // check if joincode matches
+    const joincodeNotValid = workspace.joinCode !== args.joinCode;
+    if (joincodeNotValid) {
+        throw new Error("Join code not valid, please confirm again")
+    }
+
+    // check if memeber exist
+    const memberUSer = await getUserMember(ctx, args.workspaceId, userId);
+
+    if (memberUSer) {
+      throw new Error("Already a member of this workspace!")
+    }
+
+    // join the workspace
+    const memberId = await ctx.db.insert("members", {
+      userId: userId,
+      workspaceId: args.workspaceId,
+      role:"member"
+    })
+
+    return memberId;
+  }
+})
