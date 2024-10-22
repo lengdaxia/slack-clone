@@ -81,8 +81,16 @@ const Editor = ({
             enter: {
               key: "Enter",
               handler: () => {
-                // TODO: submit form
-                return;
+                const text = quill.getText();
+                const addedImage = imageRef.current?.files?.[0] || null;
+
+                const isEmpty =
+                  !addedImage &&
+                  text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
+                if (isEmpty) return;
+
+                const body = JSON.stringify(text);
+                submitRef.current?.({ body, image: addedImage });
               },
             },
             shift_enter: {
@@ -143,7 +151,7 @@ const Editor = ({
     quill?.insertText(quill?.getSelection()?.index || 0, emoji.native);
   };
 
-  const isEmpty = text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
+  const isEmpty = !image && text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
 
   return (
     <div className="flex flex-col">
@@ -220,7 +228,12 @@ const Editor = ({
             <Button
               size={"iconSm"}
               disabled={disable || isEmpty}
-              onClick={() => {}}
+              onClick={() => {
+                onSubmit({
+                  body: JSON.stringify(quillRef.current?.getContents()),
+                  image: image,
+                });
+              }}
               className={cn(
                 "ml-auto",
                 isEmpty
@@ -237,7 +250,7 @@ const Editor = ({
                 variant={"outline"}
                 size={"sm"}
                 disabled={disable}
-                onClick={() => {}}
+                onClick={onCancel}
               >
                 Cancel
               </Button>
