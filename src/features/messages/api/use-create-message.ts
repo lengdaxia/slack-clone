@@ -11,6 +11,7 @@ type RequestType = {
   channelId?: Id<"channels">;
   memberId?: Id<"members">;
   parentMessageId?: Id<"messages">;
+  conversationId?: Id<"conversations">;
 };
 type ResponseType = Id<"messages"> | null;
 
