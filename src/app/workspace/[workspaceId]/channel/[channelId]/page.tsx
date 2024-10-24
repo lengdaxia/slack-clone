@@ -7,10 +7,11 @@ import { Header } from "./header";
 import { EmptyTip } from "@/components/empty-tip";
 import { ChatInput } from "./chat-input";
 import { useGetMessages } from "@/features/messages/api/use-get-messages";
+import { MessageList } from "@/components/message-list";
 
 const ChannelIdPage = () => {
   const channelId = useChannelId();
-  const { results } = useGetMessages({ channelId });
+  const { results, status, loadMore } = useGetMessages({ channelId });
   console.log(results);
 
   const { data: channel, isLoading: channelLoading } = useGetChannel({
@@ -28,7 +29,14 @@ const ChannelIdPage = () => {
   return (
     <div className="flex flex-col h-full">
       <Header title={channel.name} />
-      <div className="flex-1 text-black">{JSON.stringify(results)}</div>
+      <MessageList
+        channelName={channel.name}
+        channelCreateTime={channel._creationTime}
+        data={results}
+        loadMore={loadMore}
+        isLoadingMore={status === "LoadingMore"}
+        canLoadMore={status === "CanLoadMore"}
+      />
       <ChatInput placeholder={`Message at # ${channel.name}`} />
     </div>
   );
