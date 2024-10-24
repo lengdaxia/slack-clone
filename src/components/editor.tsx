@@ -89,7 +89,7 @@ const Editor = ({
                   text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
                 if (isEmpty) return;
 
-                const body = JSON.stringify(text);
+                const body = JSON.stringify(quill.getContents());
                 submitRef.current?.({ body, image: addedImage });
               },
             },

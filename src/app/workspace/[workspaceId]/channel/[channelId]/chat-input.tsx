@@ -69,7 +69,7 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
         sendMessage.image = storageId;
       }
 
-      createMessage(sendMessage, { throwError: true });
+      await createMessage(sendMessage, { throwError: true });
       setEditorKey((prev) => prev + 1);
     } catch (error) {
       toast.error("Failed to send message!");

@@ -20,19 +20,7 @@ const Renderer = ({ value }: RendererProps) => {
     });
 
     const contents = JSON.parse(value);
-    let inputArray: any[] = [];
-    if (typeof contents === "string") {
-      contents.split("\n").forEach((element) => {
-        const op1 = { insert: element };
-        const op2 = { insert: "\n" };
-        inputArray.push(op1);
-        inputArray.push(op2);
-      });
-    } else if (typeof contents === "object") {
-      inputArray = contents["ops"] as any[];
-    }
-
-    quill.setContents(contents, "silent");
+    quill.setContents(contents);
 
     console.log(
       "value: ",
@@ -56,8 +44,6 @@ const Renderer = ({ value }: RendererProps) => {
         .trim().length === 0;
     setIsEmpty(isEmpty);
     container.innerHTML = quill.root.innerHTML;
-
-    console.log("getText: ", quill.getText(), " isEmpty:", isEmpty);
 
     return () => {
       if (container) {
