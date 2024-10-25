@@ -3,6 +3,7 @@ import { useCreateChannelModal } from "../store/use-create-channel-modal";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -42,8 +43,9 @@ export const CreateChannelModal = () => {
         onSuccess(channelId) {
           router.push(`/workspace/${workspaceId}/channel/${channelId}`);
           handleClose();
-        },onError(error) {
-          toast.error("Failed to create channel")
+        },
+        onError(error) {
+          toast.error("Failed to create channel");
         },
       }
     );
@@ -54,6 +56,7 @@ export const CreateChannelModal = () => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add a channel</DialogTitle>
+          <DialogDescription className="hidden"></DialogDescription>
         </DialogHeader>
         <form className="space-y-4" onSubmit={handleSumbit}>
           <Input

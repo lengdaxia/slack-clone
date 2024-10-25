@@ -6,6 +6,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -109,6 +110,7 @@ export const Header = ({ title }: HeaderProps) => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle># {title}</DialogTitle>
+            <DialogDescription className="hidden"></DialogDescription>
           </DialogHeader>
           <div className="flex flex-col px-4 pb-4 gap-y-2">
             <Dialog open={editOpen} onOpenChange={handleEditOpen}>
@@ -128,6 +130,7 @@ export const Header = ({ title }: HeaderProps) => {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Rename this channel</DialogTitle>
+                  <DialogDescription className="hidden"></DialogDescription>
                   <div className="flex flex-col gap-y-2 px-4 pt-2 items-center justify-center">
                     <form onSubmit={handleEdit} className="w-full">
                       <Input

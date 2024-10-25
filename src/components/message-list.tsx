@@ -1,4 +1,4 @@
-import { format, isToday, isYesterday } from "date-fns";
+import { differenceInMinutes, format, isToday, isYesterday } from "date-fns";
 import { GetMessagesReturnType } from "@/features/messages/api/use-get-messages";
 import { Message } from "./message";
 
@@ -25,6 +25,8 @@ const formatDatLabel = (dateStr: string) => {
   }
 };
 
+const TIME_TRESHOLD = 5; // 5m
+
 export const MessageList = ({
   memberName,
   memberImage,
@@ -41,7 +43,7 @@ export const MessageList = ({
       const date = new Date(message._creationTime);
       const dateKey = format(date, "yyy-MM-dd");
       if (!groups[dateKey]) {
-        groups[dateKey] = [];
+        groups[dateKey] = [message];
       } else {
         groups[dateKey].unshift(message);
       }
@@ -49,6 +51,8 @@ export const MessageList = ({
     },
     {} as Record<string, typeof data>
   );
+
+  console.log("groupedMessages:", groupedMessages);
 
   return (
     <div className="flex-1 flex flex-col-reverse pb-4 overflow-y-auto message-scrollbar">
@@ -60,7 +64,16 @@ export const MessageList = ({
               {formatDatLabel(dateKey)}
             </span>
           </div>
-          {messages.map((message) => {
+          {messages.map((message, index) => {
+            const previousMessage = messages[index - 1];
+            const isCompact =
+              previousMessage &&
+              previousMessage.user?._id === message.user?._id &&
+              differenceInMinutes(
+                new Date(message._creationTime),
+                new Date(previousMessage._creationTime)
+              ) < TIME_TRESHOLD;
+
             return (
               <Message
                 key={message._id}
@@ -76,7 +89,7 @@ export const MessageList = ({
                 createdAt={message._creationTime}
                 isEditing={false}
                 setEditingId={() => {}}
-                isCompact={false}
+                isCompact={isCompact}
                 hideThreadButton={false}
                 threadCount={message.threadCount}
                 threadImage={message.threadImage}

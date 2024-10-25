@@ -9,7 +9,7 @@ import {
 import { ChevronDown, ListFilter, SquarePen } from "lucide-react";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import { Hint } from "@/components/hint";
-import { PreferencesModal } from "./preferencec-modal";
+import { PreferencesModal } from "./preferences-modal";
 import { useState } from "react";
 import { InviteModal } from "./innvite-modal";
 
@@ -27,16 +27,17 @@ export const WorkspaceHeader = ({
 
   return (
     <>
-      <InviteModal 
-      open={inviteOpen} 
-      setOpen={setInviteOpen} 
-      name={workspace.name}
-      joincode={workspace.joinCode}
+      <InviteModal
+        open={inviteOpen}
+        setOpen={setInviteOpen}
+        name={workspace.name}
+        joincode={workspace.joinCode}
       />
-      <PreferencesModal 
-        open={preferencesOpen} 
-        setOpen={setPreferencesOpen} 
-        initValue={workspace.name}/>
+      <PreferencesModal
+        open={preferencesOpen}
+        setOpen={setPreferencesOpen}
+        initValue={workspace.name}
+      />
       <div className="flex items-center justify-between px-4 h-[49px] gap-0.5">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
