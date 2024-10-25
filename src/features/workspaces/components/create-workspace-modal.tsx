@@ -3,6 +3,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -48,6 +49,7 @@ export const CreateWorkspaceModal = () => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add a workspace</DialogTitle>
+          <DialogDescription className="hidden"></DialogDescription>
         </DialogHeader>
 
         <form className="space-y-4" onSubmit={handleSubmit}>

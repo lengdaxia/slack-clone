@@ -5,6 +5,7 @@ import { Hint } from "./hint";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { UserAvatarButton } from "./user-avatar-button";
 import { ImageGallery } from "./image-gallery";
+import { MessageToolbar } from "./message-toolbar";
 
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 
@@ -104,6 +105,17 @@ export const Message = ({
           <EditSpan />
         </div>
       </div>
+      {!isEditing && (
+        <MessageToolbar
+          isAuthor={isAuthor}
+          isPending={false}
+          handleEdit={() => setEditingId(id)}
+          handleThread={() => {}}
+          handleDelete={() => {}}
+          handleReaction={() => {}}
+          hideThreadButton={hideThreadButton}
+        />
+      )}
     </div>
   );
 };
