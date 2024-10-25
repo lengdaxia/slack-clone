@@ -152,6 +152,9 @@ const Editor = ({
   };
 
   const isEmpty = !image && text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
+  const isInputTextSame =
+    JSON.stringify(defaultValue) ===
+    JSON.stringify(quillRef.current?.getContents());
 
   return (
     <div className="flex flex-col">
@@ -260,9 +263,18 @@ const Editor = ({
               </Button>
               <Button
                 size={"sm"}
-                disabled={disable || isEmpty}
-                onClick={() => {}}
-                className="bg-[#007a5a] hover:bg-[#007a5a]/80 text-white"
+                disabled={disable || isEmpty || isInputTextSame}
+                onClick={() =>
+                  onSubmit({
+                    body: JSON.stringify(quillRef.current?.getContents()),
+                    image: null,
+                  })
+                }
+                className={cn(
+                  "bg-[#007a5a] hover:bg-[#007a5a]/80 text-white",
+                  isInputTextSame &&
+                    "text-muted-foreground bg-gray-50 hover:bg-gray-50"
+                )}
               >
                 Save
               </Button>

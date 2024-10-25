@@ -2,12 +2,17 @@ import dynamic from "next/dynamic";
 import { Doc, Id } from "../../convex/_generated/dataModel";
 import { format, isToday, isYesterday } from "date-fns";
 import { Hint } from "./hint";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { UserAvatarButton } from "./user-avatar-button";
 import { ImageGallery } from "./image-gallery";
 import { MessageToolbar } from "./message-toolbar";
+import { useUpdateMessage } from "@/features/messages/api/use-update-message";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { useRemoveMessage } from "@/features/messages/api/use-remove-message";
+import { useConfirm } from "@/app/hooks/use-confirm";
 
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
+const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 interface MessageProps {
   id: Id<"messages">;
@@ -27,7 +32,7 @@ interface MessageProps {
   updatedAt: Doc<"messages">["updateAt"];
   isEditing: boolean;
   isCompact?: boolean;
-  setEditingId: (id: Id<"messages">) => void;
+  setEditingId: (id: Id<"messages"> | null) => void;
   hideThreadButton?: boolean;
   threadCount?: number;
   threadImage?: string;
@@ -53,70 +58,159 @@ export const Message = ({
   threadImage,
   threadTimestamp,
 }: MessageProps) => {
+  const [ConfirmDialog, confirm] = useConfirm(
+    "are you sure to delete this message?",
+    "delete action is ireversiable."
+  );
+
+  const { mutate: updateMessage, isPending: isUpdatingMessage } =
+    useUpdateMessage();
+
+  const { mutate: removeMessage, isPending: isRemovingMessage } =
+    useRemoveMessage();
+
+  const handleUpdate = ({ body }: { body: string }) => {
+    updateMessage(
+      { id, body },
+      {
+        onSuccess() {
+          toast.success("Message updated");
+          setEditingId(null);
+        },
+        onError() {
+          toast.error("Failed to update message.");
+        },
+      }
+    );
+  };
+
+  const handleRemove = async () => {
+    const ok = await confirm();
+    if (!ok) return;
+    removeMessage(
+      { id },
+      {
+        onSuccess() {
+          toast.success("Message deleted");
+          // TODO: Close thread if opened
+        },
+        onError(error) {
+          toast.error("Failed to delete the message");
+        },
+      }
+    );
+  };
+
   const createDate = new Date(createdAt);
   const EditSpan = () =>
     updatedAt && (
       <span className="text-xs text-muted-foreground">(edited)</span>
     );
 
+  const MessageTopRightToolbar = () =>
+    !isEditing && (
+      <MessageToolbar
+        isAuthor={isAuthor}
+        isPending={isUpdatingMessage || isRemovingMessage}
+        handleEdit={() => setEditingId(id)}
+        handleThread={() => {}}
+        handleDelete={handleRemove}
+        handleReaction={() => {}}
+        hideThreadButton={hideThreadButton}
+      />
+    );
+
+  const MessageEditor = () => (
+    <div className="w-full h-full">
+      <Editor
+        onSubmit={handleUpdate}
+        disable={isUpdatingMessage}
+        onCancel={() => setEditingId(null)}
+        defaultValue={JSON.parse(body)}
+        variant="update"
+      />
+    </div>
+  );
+
   if (isCompact)
     // compact message
     return (
-      <div className="flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative">
-        <div className="flex items-start gap-2">
-          <Hint label={formatFullTime(createDate)}>
-            <button className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 w-[40px] leading-[22px] text-center hover:underline">
-              {format(createDate, "hh:mm")}
-            </button>
-          </Hint>
-          <div className="w-full flex flex-col">
-            <Renderer value={body} />
-            <ImageGallery images={[image]} />
-            <EditSpan />
-          </div>
-        </div>
-      </div>
-    );
-  return (
-    // normar message with user image and name
-    <div className="flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative">
-      <div className="flex items-start gap-2">
-        <UserAvatarButton image={authorImage} name={authorName} />
-        <div className="flex flex-col w-full overflow-hidden">
-          <div className="text-sm">
-            <button
-              onClick={() => {}}
-              className="font-bold text-primary hover:underline"
-            >
-              {authorName}
-            </button>
-            <span>&nbsp;&nbsp;</span>
+      <>
+        <ConfirmDialog />
+        <div
+          className={cn(
+            "flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative",
+            isEditing && "bg-[#f2c74433] hover:bg-[#f2c74433]",
+            isRemovingMessage &&
+              "bg-rose-500/50 transform transition-all scale-y-0 origin-bottom duration-300"
+          )}
+        >
+          <div className="flex items-start gap-2">
             <Hint label={formatFullTime(createDate)}>
-              <button className="text-xs text-muted-foreground hover:underline">
-                {format(createDate, "h:mm a")}
+              <button className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 w-[40px] leading-[22px] text-center hover:underline">
+                {format(createDate, "hh:mm")}
               </button>
             </Hint>
+            {isEditing ? (
+              <MessageEditor />
+            ) : (
+              <div className="w-full flex flex-col">
+                <Renderer value={body} />
+                <ImageGallery images={[image]} />
+                <EditSpan />
+              </div>
+            )}
           </div>
-          <Renderer value={body} />
-          <ImageGallery
-            images={[image]}
-            onClick={(index) => console.log(" clicked:", index)}
-          />
-          <EditSpan />
+          {/* message's toobar */}
+          <MessageTopRightToolbar />
         </div>
+      </>
+    );
+  return (
+    // normal message with user image and name
+    <>
+      <ConfirmDialog />
+      <div
+        className={cn(
+          "flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative",
+          isEditing && "bg-[#f2c74433] hover:bg-[#f2c74433]",
+          isRemovingMessage &&
+            "bg-rose-500/50 transform transition-all scale-y-0 origin-bottom duration-300"
+        )}
+      >
+        <div className="flex items-start gap-2">
+          <UserAvatarButton image={authorImage} name={authorName} />
+          {isEditing ? (
+            <MessageEditor />
+          ) : (
+            <div className="flex flex-col w-full overflow-hidden">
+              <div className="text-sm">
+                <button
+                  onClick={() => {}}
+                  className="font-bold text-primary hover:underline"
+                >
+                  {authorName}
+                </button>
+                <span>&nbsp;&nbsp;</span>
+                <Hint label={formatFullTime(createDate)}>
+                  <button className="text-xs text-muted-foreground hover:underline">
+                    {format(createDate, "h:mm a")}
+                  </button>
+                </Hint>
+              </div>
+              <Renderer value={body} />
+              <ImageGallery
+                images={[image]}
+                onClick={(index) => console.log(" clicked:", index)}
+              />
+              <EditSpan />
+            </div>
+          )}
+        </div>
+        {/* message's toobar */}
+        <MessageTopRightToolbar />
       </div>
-      {!isEditing && (
-        <MessageToolbar
-          isAuthor={isAuthor}
-          isPending={false}
-          handleEdit={() => setEditingId(id)}
-          handleThread={() => {}}
-          handleDelete={() => {}}
-          handleReaction={() => {}}
-          hideThreadButton={hideThreadButton}
-        />
-      )}
-    </div>
+    </>
   );
 };
 
