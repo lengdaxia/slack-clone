@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useRemoveMessage } from "@/features/messages/api/use-remove-message";
 import { useConfirm } from "@/app/hooks/use-confirm";
+import { useToggleReaction } from "@/features/reactions/api/use-toggle-reaction";
+import { MessageReactions } from "./message-reactions";
 
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
@@ -69,6 +71,9 @@ export const Message = ({
   const { mutate: removeMessage, isPending: isRemovingMessage } =
     useRemoveMessage();
 
+  const { mutate: toggleReactin, isPending: isTogglingReactions } =
+    useToggleReaction();
+
   const handleUpdate = ({ body }: { body: string }) => {
     updateMessage(
       { id, body },
@@ -101,6 +106,17 @@ export const Message = ({
     );
   };
 
+  const handleReaction = (value: string) => {
+    toggleReactin(
+      { messageId: id, value },
+      {
+        onError(error) {
+          toast.error("Failed to add reaction");
+        },
+      }
+    );
+  };
+
   const createDate = new Date(createdAt);
   const EditSpan = () =>
     updatedAt && (
@@ -115,7 +131,7 @@ export const Message = ({
         handleEdit={() => setEditingId(id)}
         handleThread={() => {}}
         handleDelete={handleRemove}
-        handleReaction={() => {}}
+        handleReaction={handleReaction}
         hideThreadButton={hideThreadButton}
       />
     );
@@ -130,6 +146,10 @@ export const Message = ({
         variant="update"
       />
     </div>
+  );
+
+  const ReactionsSection = () => (
+    <MessageReactions reactions={reactions} onChange={handleReaction} />
   );
 
   if (isCompact)
@@ -158,6 +178,7 @@ export const Message = ({
                 <Renderer value={body} />
                 <ImageGallery images={[image]} />
                 <EditSpan />
+                <ReactionsSection />
               </div>
             )}
           </div>
@@ -204,6 +225,7 @@ export const Message = ({
                 onClick={(index) => console.log(" clicked:", index)}
               />
               <EditSpan />
+              <ReactionsSection />
             </div>
           )}
         </div>
