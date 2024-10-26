@@ -10,12 +10,12 @@ import {
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import { useCreateChannel } from "../api/use-create-channel";
-import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 export const CreateChannelModal = () => {
-  const workspaceId = useWorkspaceId();
+  const workspaceId = usePageWorkspaceId();
   const router = useRouter();
   const { mutate, isPending } = useCreateChannel();
   const [open, setOpen] = useCreateChannelModal();

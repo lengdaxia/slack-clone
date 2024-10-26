@@ -1,6 +1,6 @@
-import { useChannelId } from "@/app/hooks/use-channel-id";
+import { usePageChannelId } from "@/app/hooks/use-page-channel-id";
 import { useConfirm } from "@/app/hooks/use-confirm";
-import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,8 +27,8 @@ interface HeaderProps {
 
 export const Header = ({ title }: HeaderProps) => {
   const router = useRouter();
-  const channelId = useChannelId();
-  const workspaceId = useWorkspaceId();
+  const channelId = usePageChannelId();
+  const workspaceId = usePageWorkspaceId();
   const [editOpen, setEditOpen] = useState(false);
   const [ConfirmDialog, confirm] = useConfirm(
     "Are you sure?",

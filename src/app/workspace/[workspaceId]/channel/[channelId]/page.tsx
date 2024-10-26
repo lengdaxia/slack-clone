@@ -1,6 +1,6 @@
 "use client";
 
-import { useChannelId } from "@/app/hooks/use-channel-id";
+import { usePageChannelId } from "@/app/hooks/use-page-channel-id";
 import { AppLoader } from "@/components/app-loader";
 import { useGetChannel } from "@/features/channels/api/use-get-channel";
 import { Header } from "./header";
@@ -10,9 +10,8 @@ import { useGetMessages } from "@/features/messages/api/use-get-messages";
 import { MessageList } from "@/components/message-list";
 
 const ChannelIdPage = () => {
-  const channelId = useChannelId();
+  const channelId = usePageChannelId();
   const { results, status, loadMore } = useGetMessages({ channelId });
-  console.log(results);
 
   const { data: channel, isLoading: channelLoading } = useGetChannel({
     channelId,

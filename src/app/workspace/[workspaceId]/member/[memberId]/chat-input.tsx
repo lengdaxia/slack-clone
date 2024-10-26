@@ -12,16 +12,17 @@ const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 interface ChatInputProps {
   placeholder: string;
+  conversationId: Id<"conversations">;
 }
 
 type SendMessageValues = {
-  channelId: Id<"channels">;
   workspaceId: Id<"workspaces">;
+  conversationId: Id<"conversations">;
   body: string;
   image?: Id<"_storage">;
 };
 
-export const ChatInput = ({ placeholder }: ChatInputProps) => {
+export const ChatInput = ({ placeholder, conversationId }: ChatInputProps) => {
   const workspaceId = usePageWorkspaceId();
   const channelId = usePageChannelId();
   const editorRef = useRef<Quill | null>(null);
@@ -46,7 +47,7 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
 
       const sendMessage: SendMessageValues = {
         workspaceId,
-        channelId,
+        conversationId,
         body,
         image: undefined,
       };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
 import { AppLoader } from "@/components/app-loader";
 import { EmptyTip } from "@/components/empty-tip";
 import { useGetChannels } from "@/features/channels/api/use-get-channels";
@@ -14,7 +14,7 @@ const WorkspaceIdPage = () => {
   const router = useRouter();
   const [open, setOpen] = useCreateChannelModal();
 
-  const workspaceId = useWorkspaceId();
+  const workspaceId = usePageWorkspaceId();
   const { data: currentMember, isLoading: memberLoading } = useCurrentMember({
     workspaceId,
   });

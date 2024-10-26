@@ -1,6 +1,6 @@
 "use client";
 
-import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
 import { AppLoader } from "@/components/app-loader";
 import { Button } from "@/components/ui/button";
 import { useGetWorkspacePublicInfo } from "@/features/workspaces/api/use-get-workspace-public-Info";
@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 const JoinPage = () => {
   const router = useRouter();
-  const workspaceId = useWorkspaceId();
+  const workspaceId = usePageWorkspaceId();
   const { data, isLoading } = useGetWorkspacePublicInfo({ workspaceId });
   const { mutate: joinWorkspace, isPending } = useJoinMember();
 

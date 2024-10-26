@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useUpdateWorkspace } from "@/features/workspaces/api/use-update-workspace";
 import { TrashIcon } from "lucide-react";
 import { FormEvent, useState } from "react";
-import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
 import { toast } from "sonner";
 import { useRemoveWorkspace } from "@/features/workspaces/api/use-remove-workspace";
 import { useRouter } from "next/navigation";
@@ -30,7 +30,7 @@ export const PreferencesModal = ({
   initValue,
 }: PreferencesModalProps) => {
   const router = useRouter();
-  const workspaceId = useWorkspaceId();
+  const workspaceId = usePageWorkspaceId();
   const [name, setName] = useState(initValue);
   const [editOpen, setEditOpen] = useState(false);
   const [ConfirmDialog, confirm] = useConfirm(

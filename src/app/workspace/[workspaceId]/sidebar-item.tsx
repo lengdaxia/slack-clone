@@ -1,4 +1,4 @@
-import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
@@ -34,7 +34,7 @@ export const SidebarItem = ({
   icon: Icon,
   variant = "default",
 }: SidebarItemProps) => {
-  const workspaceId = useWorkspaceId();
+  const workspaceId = usePageWorkspaceId();
   return (
     <Button
       variant={"transparent"}

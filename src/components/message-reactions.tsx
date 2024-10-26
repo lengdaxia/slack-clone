@@ -1,4 +1,4 @@
-import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
 import { Doc, Id } from "../../convex/_generated/dataModel";
 import { useCurrentMember } from "@/features/members/api/use-current-member";
 import { cn } from "@/lib/utils";
@@ -20,7 +20,7 @@ export const MessageReactions = ({
   reactions,
   onChange,
 }: MessageReactionsProps) => {
-  const workspaceId = useWorkspaceId();
+  const workspaceId = usePageWorkspaceId();
   const { data: currentMember } = useCurrentMember({ workspaceId });
   const currentMemberId = currentMember?._id;
 

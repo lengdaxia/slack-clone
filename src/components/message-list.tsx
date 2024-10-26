@@ -4,9 +4,10 @@ import { Message } from "./message";
 import { ChannelHero } from "./channel-hero";
 import { useState } from "react";
 import { Id } from "../../convex/_generated/dataModel";
-import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
 import { useCurrentMember } from "@/features/members/api/use-current-member";
 import { Loader } from "lucide-react";
+import { ConversationHero } from "./conversation-hero";
 
 interface MessageListProps {
   memberName?: string;
@@ -45,7 +46,7 @@ export const MessageList = ({
   canLoadMore,
 }: MessageListProps) => {
   const [editingId, setEditingId] = useState<Id<"messages"> | null>(null);
-  const workspaceId = useWorkspaceId();
+  const workspaceId = usePageWorkspaceId();
   const { data: currentMember } = useCurrentMember({ workspaceId });
 
   const groupedMessages = data?.reduce(
@@ -61,8 +62,6 @@ export const MessageList = ({
     },
     {} as Record<string, typeof data>
   );
-
-  console.log("groupedMessages:", groupedMessages);
 
   return (
     <div className="flex-1 flex flex-col-reverse pb-4 overflow-y-auto message-scrollbar">
@@ -142,6 +141,9 @@ export const MessageList = ({
           name={channelName}
           creationTime={new Date(channelCreateTime)}
         />
+      )}
+      {variant === "conversation" && (
+        <ConversationHero name={memberName} image={memberImage} />
       )}
     </div>
   );

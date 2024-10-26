@@ -1,5 +1,5 @@
 import { useCurrentMember } from "@/features/members/api/use-current-member";
-import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
 import { useGetWorkspace } from "@/features/workspaces/api/use-get-workspace";
 import { AppLoader } from "@/components/app-loader";
 import { EmptyTip } from "@/components/empty-tip";
@@ -11,11 +11,13 @@ import { WorkspaceSection } from "./workspace-section";
 import { useGetMemberUsers } from "@/features/members/api/use-get-members";
 import { MemberUserItem } from "./member-user-item";
 import { useCreateChannelModal } from "@/features/channels/store/use-create-channel-modal";
-import { useChannelId } from "@/app/hooks/use-channel-id";
+import { usePageChannelId } from "@/app/hooks/use-page-channel-id";
+import { usePageMemberId } from "@/app/hooks/use-page-member-id";
 
 export const WorkspaceSidebar = () => {
-  const workspaceId = useWorkspaceId();
-  const channelId = useChannelId();
+  const workspaceId = usePageWorkspaceId();
+  const channelId = usePageChannelId();
+  const memberId = usePageMemberId();
   const [_open, setOpenNewChannel] = useCreateChannelModal();
 
   const { data: member, isLoading: memberLoading } = useCurrentMember({
@@ -90,6 +92,7 @@ export const WorkspaceSidebar = () => {
             label={item.user.name!}
             image={item.user.image}
             id={item._id}
+            variant={memberId === item._id ? "active" : "default"}
           />
         ))}
       </WorkspaceSection>

@@ -1,4 +1,4 @@
-import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
@@ -25,8 +25,8 @@ const memberUserItemVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "default"
-    }
+      variant: "default",
+    },
   }
 );
 
@@ -36,19 +36,20 @@ export const MemberUserItem = ({
   image,
   variant = "default",
 }: MemberUserItemProps) => {
-  const workspaceId = useWorkspaceId();
+  const workspaceId = usePageWorkspaceId();
   const avatarFallback = label.charAt(0).toUpperCase();
 
   return (
-    <Button variant={"transparent"}
-      className={cn(memberUserItemVariants({variant}))}
-      size={"sm"} 
+    <Button
+      variant={"transparent"}
+      className={cn(memberUserItemVariants({ variant }))}
+      size={"sm"}
       asChild
     >
       <Link href={`/workspace/${workspaceId}/member/${id}`}>
         <Avatar className="size-5 rounded-md mr-1 shrink-0">
-          <AvatarImage className="rounded-md" src={image} alt="user avatar"/>
-          <AvatarFallback className="rounded-md bg-sky-500 text-white"> 
+          <AvatarImage className="rounded-md" src={image} alt="user avatar" />
+          <AvatarFallback className="rounded-md bg-sky-500 text-white">
             {avatarFallback}
           </AvatarFallback>
         </Avatar>

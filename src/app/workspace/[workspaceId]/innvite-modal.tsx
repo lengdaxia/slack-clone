@@ -1,4 +1,4 @@
-import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,22 +24,25 @@ export const InviteModal = ({
   name,
   joincode,
 }: InviteModalProps) => {
-  const workspaceId = useWorkspaceId();
-  const {mutate: refreshCode, isPending} = useRefreshJoincode();
+  const workspaceId = usePageWorkspaceId();
+  const { mutate: refreshCode, isPending } = useRefreshJoincode();
 
   const handleNewJoincode = () => {
-    refreshCode({workspaceId}, {
-      onSuccess() {
-          toast.success("New join code refreshed")
-      },
-      onError() {
-          toast.error("Failed to refresh join code")
-      },
-    })
-  }
+    refreshCode(
+      { workspaceId },
+      {
+        onSuccess() {
+          toast.success("New join code refreshed");
+        },
+        onError() {
+          toast.error("Failed to refresh join code");
+        },
+      }
+    );
+  };
 
   const handleCopy = () => {
-    const copyLink = `${window.location .origin}/join/${workspaceId}/`;
+    const copyLink = `${window.location.origin}/join/${workspaceId}/`;
     window.navigator.clipboard
       .writeText(copyLink)
       .then(() => toast.success("joincode link copied"));
@@ -58,23 +61,27 @@ export const InviteModal = ({
         <div className="flex flex-col items-center justify-center py-10">
           <p className="text-3xl font-bold">{joincode.toUpperCase()}</p>
 
-          <Button onClick={handleCopy} className="mt-2" variant={"ghost"} size={"sm"}>
+          <Button
+            onClick={handleCopy}
+            className="mt-2"
+            variant={"ghost"}
+            size={"sm"}
+          >
             <span>Copy code</span>
             <Copy className="size-4 ml-2" />
           </Button>
         </div>
         <div className="flex items-center justify-between w-full">
-          <Button 
-          disabled={isPending}
-          onClick={handleNewJoincode}
-          variant={"outline"}>
+          <Button
+            disabled={isPending}
+            onClick={handleNewJoincode}
+            variant={"outline"}
+          >
             <span>Refresh</span>
             <RefreshCcw className="size-4 ml-2" />
           </Button>
-          <DialogClose asChild> 
-            <Button>
-              Close
-            </Button>
+          <DialogClose asChild>
+            <Button>Close</Button>
           </DialogClose>
         </div>
       </DialogContent>
