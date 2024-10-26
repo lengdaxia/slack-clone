@@ -127,9 +127,7 @@ export const MessageList = ({
             return () => observer.disconnect();
           }
         }}
-      >
-        ;
-      </div>
+      ></div>
       {isLoadingMore && (
         <div className="text-center my-2 relative">
           <hr className="absolute top-1/2 left-0 right-0 border-t border-gray-300" />

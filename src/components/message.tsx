@@ -12,6 +12,7 @@ import { useRemoveMessage } from "@/features/messages/api/use-remove-message";
 import { useConfirm } from "@/app/hooks/use-confirm";
 import { useToggleReaction } from "@/features/reactions/api/use-toggle-reaction";
 import { MessageReactions } from "./message-reactions";
+import { usePanel } from "@/app/hooks/use-panel";
 
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
@@ -65,6 +66,8 @@ export const Message = ({
     "delete action is ireversiable."
   );
 
+  const { parentMessageId, onOpenMessage, onClose } = usePanel();
+
   const { mutate: updateMessage, isPending: isUpdatingMessage } =
     useUpdateMessage();
 
@@ -97,7 +100,11 @@ export const Message = ({
       {
         onSuccess() {
           toast.success("Message deleted");
-          // TODO: Close thread if opened
+
+          // close thread if opened
+          if (parentMessageId === id) {
+            onClose();
+          }
         },
         onError(error) {
           toast.error("Failed to delete the message");
@@ -129,7 +136,7 @@ export const Message = ({
         isAuthor={isAuthor}
         isPending={isUpdatingMessage || isRemovingMessage}
         handleEdit={() => setEditingId(id)}
-        handleThread={() => {}}
+        handleThread={() => onOpenMessage(id)}
         handleDelete={handleRemove}
         handleReaction={handleReaction}
         hideThreadButton={hideThreadButton}
