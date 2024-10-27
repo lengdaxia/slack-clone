@@ -12,6 +12,7 @@ import { Hint } from "@/components/hint";
 import { PreferencesModal } from "./preferences-modal";
 import { useState } from "react";
 import { useInviteNewMemberModal } from "@/features/workspaces/store/use-invite-new-member-modal";
+import { InviteModal } from "./innvite-modal";
 
 interface WorkspaceHeaderProps {
   workspace: Doc<"workspaces">;
@@ -27,6 +28,7 @@ export const WorkspaceHeader = ({
 
   return (
     <>
+      <InviteModal />
       <PreferencesModal
         open={preferencesOpen}
         setOpen={setPreferencesOpen}

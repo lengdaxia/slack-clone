@@ -18,9 +18,6 @@ import { toast } from "sonner";
 
 export const InviteModal = () => {
   const workspaceId = usePageWorkspaceId();
-  if (!workspaceId) {
-    return null;
-  }
   const { data: workspace, isLoading: workspaceLoading } = useGetWorkspace({
     id: workspaceId,
   });
