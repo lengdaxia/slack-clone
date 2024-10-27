@@ -18,7 +18,7 @@ export const CreateChannelModal = () => {
   const workspaceId = usePageWorkspaceId();
   const router = useRouter();
   const { mutate, isPending } = useCreateChannel();
-  const [open, setOpen] = useCreateChannelModal();
+  const { open, setOpen } = useCreateChannelModal();
   const [name, setName] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

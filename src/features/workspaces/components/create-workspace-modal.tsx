@@ -17,7 +17,7 @@ import { toast } from "sonner";
 
 export const CreateWorkspaceModal = () => {
   const router = useRouter();
-  const [open, setOpen] = useCreateWorkspaceModal();
+  const { open, setOpen } = useCreateWorkspaceModal();
   const { mutate, isPending } = useCreateWorkspace();
 
   const [name, setName] = useState("");

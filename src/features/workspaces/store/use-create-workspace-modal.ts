@@ -1,7 +1,8 @@
-import {atom, useAtom} from "jotai";
+import { atom, useAtom } from "jotai";
 
 const modelState = atom(false);
 
 export const useCreateWorkspaceModal = () => {
-  return useAtom(modelState);
-}
+  const [open, setOpen] = useAtom(modelState);
+  return { open, setOpen };
+};

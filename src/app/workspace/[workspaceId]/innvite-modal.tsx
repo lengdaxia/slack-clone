@@ -1,4 +1,6 @@
 import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
+import { AppLoader } from "@/components/app-loader";
+import { EmptyTip } from "@/components/empty-tip";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,24 +10,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useGetWorkspace } from "@/features/workspaces/api/use-get-workspace";
 import { useRefreshJoincode } from "@/features/workspaces/api/use-refresh-joincode";
+import { useInviteNewMemberModal } from "@/features/workspaces/store/use-invite-new-member-modal";
 import { Copy, RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
 
-interface InviteModalProps {
-  open: boolean;
-  setOpen: (value: boolean) => void;
-  name: string;
-  joincode: string;
-}
-export const InviteModal = ({
-  open,
-  setOpen,
-  name,
-  joincode,
-}: InviteModalProps) => {
+export const InviteModal = () => {
   const workspaceId = usePageWorkspaceId();
+  const { data: workspace, isLoading: workspaceLoading } = useGetWorkspace({
+    id: workspaceId,
+  });
   const { mutate: refreshCode, isPending } = useRefreshJoincode();
+  const { open, setOpen } = useInviteNewMemberModal();
 
   const handleNewJoincode = () => {
     refreshCode(
@@ -48,6 +45,16 @@ export const InviteModal = ({
       .then(() => toast.success("joincode link copied"));
   };
 
+  if (workspaceLoading) {
+    return <AppLoader />;
+  }
+  if (!workspace) {
+    return <EmptyTip label="Workspace not found." />;
+  }
+
+  const name = workspace.name;
+  const joincode = workspace.joinCode;
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
@@ -67,7 +74,7 @@ export const InviteModal = ({
             variant={"ghost"}
             size={"sm"}
           >
-            <span>Copy code</span>
+            <span>Copy Invite Link</span>
             <Copy className="size-4 ml-2" />
           </Button>
         </div>

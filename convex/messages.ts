@@ -272,7 +272,6 @@ export const remove = mutation({
     }
 
     //remove related images
-    console.log("message.image: ", message.image);
     if (message.image) {
       await ctx.storage.delete(message.image!);
     }

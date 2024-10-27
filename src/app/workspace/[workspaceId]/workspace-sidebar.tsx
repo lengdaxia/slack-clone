@@ -13,14 +13,17 @@ import { MemberUserItem } from "./member-user-item";
 import { useCreateChannelModal } from "@/features/channels/store/use-create-channel-modal";
 import { usePageChannelId } from "@/app/hooks/use-page-channel-id";
 import { usePageMemberId } from "@/app/hooks/use-page-member-id";
+import { usePathname } from "next/navigation";
+import { useInviteNewMemberModal } from "@/features/workspaces/store/use-invite-new-member-modal";
 
 export const WorkspaceSidebar = () => {
   const workspaceId = usePageWorkspaceId();
   const channelId = usePageChannelId();
   const memberId = usePageMemberId();
+  const pathName = usePathname();
 
-  const [open, setOpenNewChannel] = useCreateChannelModal();
-  console.log(open);
+  const { setOpen: setOpenNewChannel } = useCreateChannelModal();
+  const { setOpen: setInviteOpen } = useInviteNewMemberModal();
 
   const { data: member, isLoading: memberLoading } = useCurrentMember({
     workspaceId,
@@ -55,13 +58,15 @@ export const WorkspaceSidebar = () => {
           id="threads"
           label="Threads"
           icon={MessageSquareText}
-          variant={"default"}
+          middlePath="threads"
+          variant={pathName.includes("threads") ? "active" : "default"}
         />
         <SidebarItem
           id="drafts"
           label="Drafts & Send"
           icon={SendHorizonal}
-          variant={"default"}
+          middlePath="drafts"
+          variant={pathName.includes("drafts") ? "active" : "default"}
         />
       </div>
       <WorkspaceSection
@@ -85,7 +90,7 @@ export const WorkspaceSidebar = () => {
       <WorkspaceSection
         label="Direct Messages"
         hint="Create new message"
-        onNew={() => {}}
+        onNew={() => setInviteOpen(true)}
       >
         {memberUsers?.map((item) => (
           <MemberUserItem

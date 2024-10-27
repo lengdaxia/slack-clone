@@ -24,7 +24,6 @@ const ChannelIdPage = () => {
   if (!channel) {
     return <EmptyTip label="Channel not found" />;
   }
-
   return (
     <div className="flex flex-col h-full">
       <Header title={channel.name} />

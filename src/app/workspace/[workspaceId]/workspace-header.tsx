@@ -11,7 +11,7 @@ import { Doc } from "../../../../convex/_generated/dataModel";
 import { Hint } from "@/components/hint";
 import { PreferencesModal } from "./preferences-modal";
 import { useState } from "react";
-import { InviteModal } from "./innvite-modal";
+import { useInviteNewMemberModal } from "@/features/workspaces/store/use-invite-new-member-modal";
 
 interface WorkspaceHeaderProps {
   workspace: Doc<"workspaces">;
@@ -23,16 +23,10 @@ export const WorkspaceHeader = ({
   isAdmin,
 }: WorkspaceHeaderProps) => {
   const [preferencesOpen, setPreferencesOpen] = useState(false);
-  const [inviteOpen, setInviteOpen] = useState(false);
+  const { setOpen: setInviteOpen } = useInviteNewMemberModal();
 
   return (
     <>
-      <InviteModal
-        open={inviteOpen}
-        setOpen={setInviteOpen}
-        name={workspace.name}
-        joincode={workspace.joinCode}
-      />
       <PreferencesModal
         open={preferencesOpen}
         setOpen={setPreferencesOpen}

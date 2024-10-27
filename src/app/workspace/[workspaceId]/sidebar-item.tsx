@@ -10,6 +10,7 @@ interface SidebarItemProps {
   id: string;
   label: string;
   icon: LucideIcon | IconType;
+  middlePath?: string;
   variant?: VariantProps<typeof sidebarItemVariants>["variant"];
 }
 
@@ -32,9 +33,17 @@ export const SidebarItem = ({
   id,
   label,
   icon: Icon,
+  middlePath = "channel",
   variant = "default",
 }: SidebarItemProps) => {
   const workspaceId = usePageWorkspaceId();
+
+  let href = `/workspace/${workspaceId}/${middlePath}/${id}`;
+  if (middlePath === "threads") {
+    href = `/workspace/${workspaceId}/${middlePath}/`;
+  } else if (middlePath === "drafts") {
+    href = `/workspace/${workspaceId}/${middlePath}/`;
+  }
   return (
     <Button
       variant={"transparent"}
@@ -42,7 +51,7 @@ export const SidebarItem = ({
       size={"sm"}
       asChild
     >
-      <Link href={`/workspace/${workspaceId}/channel/${id}`}>
+      <Link href={href}>
         <Icon className="size-3.5 mr-0 shrink-0" />
         <p className="truncate text-sm">{label}</p>
       </Link>

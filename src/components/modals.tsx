@@ -1,5 +1,6 @@
 "use client";
 
+import { InviteModal } from "@/app/workspace/[workspaceId]/innvite-modal";
 import { CreateChannelModal } from "@/features/channels/conponents/create-channel-modal";
 import { CreateWorkspaceModal } from "@/features/workspaces/components/create-workspace-modal";
 import { useEffect, useState } from "react";
@@ -10,14 +11,15 @@ export const Modals = () => {
 
   useEffect(() => {
     setMounted(true);
-  }, [])
+  }, []);
 
   if (!mounted) return null;
 
   return (
     <>
-    <CreateWorkspaceModal />
-    <CreateChannelModal />
-  </>
+      <CreateWorkspaceModal />
+      <CreateChannelModal />
+      <InviteModal />
+    </>
   );
 };

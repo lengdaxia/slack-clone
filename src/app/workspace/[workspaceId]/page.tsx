@@ -12,7 +12,7 @@ import { useEffect, useMemo } from "react";
 
 const WorkspaceIdPage = () => {
   const router = useRouter();
-  const [open, setOpen] = useCreateChannelModal();
+  const { open, setOpen } = useCreateChannelModal();
 
   const workspaceId = usePageWorkspaceId();
   const { data: currentMember, isLoading: memberLoading } = useCurrentMember({
