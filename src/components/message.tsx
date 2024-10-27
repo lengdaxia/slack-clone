@@ -69,7 +69,7 @@ export const Message = ({
     "delete action is ireversiable."
   );
 
-  const { parentMessageId, onOpenMessage, onClose } = usePanel();
+  const { parentMessageId, onOpenMessage, onOpenProfile, onClose } = usePanel();
 
   const { mutate: updateMessage, isPending: isUpdatingMessage } =
     useUpdateMessage();
@@ -79,6 +79,9 @@ export const Message = ({
 
   const { mutate: toggleReactin, isPending: isTogglingReactions } =
     useToggleReaction();
+
+  const isPending =
+    isUpdatingMessage || isTogglingReactions || isRemovingMessage;
 
   const handleUpdate = ({ body }: { body: string }) => {
     updateMessage(
@@ -120,7 +123,7 @@ export const Message = ({
     toggleReactin(
       { messageId: id, value },
       {
-        onError(error) {
+        onError() {
           toast.error("Failed to add reaction");
         },
       }
@@ -137,7 +140,7 @@ export const Message = ({
     !isEditing && (
       <MessageToolbar
         isAuthor={isAuthor}
-        isPending={isUpdatingMessage || isRemovingMessage}
+        isPending={isPending}
         handleEdit={() => setEditingId(id)}
         handleThread={() => onOpenMessage(id)}
         handleDelete={handleRemove}
@@ -150,7 +153,7 @@ export const Message = ({
     <div className="w-full h-full">
       <Editor
         onSubmit={handleUpdate}
-        disable={isUpdatingMessage}
+        disable={isUpdatingMessage || isRemovingMessage}
         onCancel={() => setEditingId(null)}
         defaultValue={JSON.parse(body)}
         variant="update"
@@ -177,7 +180,11 @@ export const Message = ({
         >
           <div className="flex items-start gap-2">
             <Hint label={formatFullTime(createDate)}>
-              <button className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 w-[40px] leading-[22px] text-center hover:underline">
+              <button
+                disabled={isPending}
+                onClick={() => onOpenProfile(memberId)}
+                className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 w-[40px] leading-[22px] text-center hover:underline"
+              >
                 {format(createDate, "hh:mm")}
               </button>
             </Hint>
@@ -218,14 +225,18 @@ export const Message = ({
         )}
       >
         <div className="flex items-start gap-2">
-          <UserAvatarButton image={authorImage} name={authorName} />
+          <UserAvatarButton
+            onClick={() => onOpenProfile(memberId)}
+            image={authorImage}
+            name={authorName}
+          />
           {isEditing ? (
             <MessageEditor />
           ) : (
             <div className="flex flex-col w-full overflow-hidden">
               <div className="text-sm">
                 <button
-                  onClick={() => {}}
+                  onClick={() => onOpenProfile(memberId)}
                   className="font-bold text-primary hover:underline"
                 >
                   {authorName}
