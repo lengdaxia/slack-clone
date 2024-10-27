@@ -26,9 +26,5 @@ export default function Home() {
     }
   }, [router, workspaceId, isLoading, open, setOpen]);
 
-  return (
-    <div className="">
-      <UserButton />
-    </div>
-  );
+  return <div></div>;
 }
