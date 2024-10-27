@@ -33,7 +33,7 @@ const MemberIdPage = () => {
         },
       }
     );
-  }, []);
+  });
 
   if (isGettingConversation) {
     return <AppLoader />;

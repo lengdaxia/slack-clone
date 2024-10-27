@@ -9,7 +9,6 @@ import { Sidebar } from "./sidebar";
 import { Toolbar } from "./toolbar";
 import { WorkspaceSidebar } from "./workspace-sidebar";
 import { usePanel } from "@/app/hooks/use-panel";
-import { Loader } from "lucide-react";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { ThreadMessageList } from "@/features/messages/components/thread-message-list";
 import { AppLoader } from "@/components/app-loader";

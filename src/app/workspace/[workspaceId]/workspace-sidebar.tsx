@@ -18,7 +18,9 @@ export const WorkspaceSidebar = () => {
   const workspaceId = usePageWorkspaceId();
   const channelId = usePageChannelId();
   const memberId = usePageMemberId();
-  const [_open, setOpenNewChannel] = useCreateChannelModal();
+
+  const [open, setOpenNewChannel] = useCreateChannelModal();
+  console.log(open);
 
   const { data: member, isLoading: memberLoading } = useCurrentMember({
     workspaceId,
@@ -27,13 +29,12 @@ export const WorkspaceSidebar = () => {
     id: workspaceId,
   });
 
-  const { data: channels, isLoading: channelsLoading } = useGetChannels({
+  const { data: channels } = useGetChannels({
     workspaceId,
   });
-  const { data: memberUsers, isLoading: memberUsersLoading } =
-    useGetMemberUsers({
-      workspaceId,
-    });
+  const { data: memberUsers } = useGetMemberUsers({
+    workspaceId,
+  });
 
   if (workspaceLoading || memberLoading) {
     return <AppLoader bgColor="bg-[#5E2C5F]" loaderColor="text-white" />;

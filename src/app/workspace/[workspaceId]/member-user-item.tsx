@@ -2,9 +2,7 @@ import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
-import { LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { IconType } from "react-icons/lib";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 

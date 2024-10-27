@@ -12,7 +12,7 @@ import EmojiData from "@emoji-mart/data";
 interface EmojiPopoverProps {
   children: React.ReactNode;
   hint?: string;
-  onEmojiSelect: (emoji: any) => void;
+  onEmojiSelect: (emoji: { native: string }) => void;
 }
 
 export const EmojiPopover = ({
@@ -23,13 +23,9 @@ export const EmojiPopover = ({
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
-  const handleSelect = (emoji: any) => {
+  const handleSelect = (emoji: { native: string }) => {
     onEmojiSelect(emoji);
     setPopoverOpen(false);
-
-    // setTimeout(() => {
-    //   setTooltipOpen(false);
-    // }, 500);
   };
   return (
     <TooltipProvider>

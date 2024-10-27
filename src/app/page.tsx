@@ -10,20 +10,22 @@ export default function Home() {
   const router = useRouter();
 
   const [open, setOpen] = useCreateWorkspaceModal();
-  const {data, isLoading} = useGetWorkspaces();
+  const { data, isLoading } = useGetWorkspaces();
 
   const workspaceId = useMemo(() => data?.[0]?._id, [data]);
 
   useEffect(() => {
     if (isLoading) return;
-    if (workspaceId) { // workspace exits then open it
+    if (workspaceId) {
+      // workspace exits then open it
       router.replace(`/workspace/${workspaceId}`);
-    } else if(!open){ //if no workspace avaiable, create it
+    } else if (!open) {
+      //if no workspace avaiable, create it
       console.log("Open creation modal");
       setOpen(true);
     }
-  }, [workspaceId, isLoading, open, setOpen]);
- 
+  }, [router, workspaceId, isLoading, open, setOpen]);
+
   return (
     <div className="">
       <UserButton />

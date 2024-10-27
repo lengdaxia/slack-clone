@@ -52,7 +52,7 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
       };
 
       if (image) {
-        const url = await getUploadUrl({}, { throwError: true });
+        const url = await getUploadUrl({ throwError: true });
         if (!url) {
           throw new Error("image url not generate");
         }
@@ -72,6 +72,7 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
       await createMessage(sendMessage, { throwError: true });
       setEditorKey((prev) => prev + 1);
     } catch (error) {
+      console.log(error);
       toast.error("Failed to send message!");
     } finally {
       setIsPending(false);

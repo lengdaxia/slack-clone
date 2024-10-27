@@ -1,4 +1,3 @@
-import { usePageChannelId } from "@/app/hooks/use-page-channel-id";
 import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
 import { useCreateMessage } from "@/features/messages/api/use-create-message";
 import { useUploadImage } from "@/features/upload/api/use-upload-image";
@@ -24,7 +23,6 @@ type SendMessageValues = {
 
 export const ChatInput = ({ placeholder, conversationId }: ChatInputProps) => {
   const workspaceId = usePageWorkspaceId();
-  const channelId = usePageChannelId();
   const editorRef = useRef<Quill | null>(null);
 
   const [editorKey, setEditorKey] = useState(0); // clear editor when message sended
@@ -53,7 +51,7 @@ export const ChatInput = ({ placeholder, conversationId }: ChatInputProps) => {
       };
 
       if (image) {
-        const url = await getUploadUrl({}, { throwError: true });
+        const url = await getUploadUrl({ throwError: true });
         if (!url) {
           throw new Error("image url not generate");
         }
@@ -73,6 +71,7 @@ export const ChatInput = ({ placeholder, conversationId }: ChatInputProps) => {
       await createMessage(sendMessage, { throwError: true });
       setEditorKey((prev) => prev + 1);
     } catch (error) {
+      console.log(error);
       toast.error("Failed to send message!");
     } finally {
       setIsPending(false);

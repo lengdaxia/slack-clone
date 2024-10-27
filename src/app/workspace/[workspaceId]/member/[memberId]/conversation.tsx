@@ -7,6 +7,7 @@ import { EmptyTip } from "@/components/empty-tip";
 import { ChatInput } from "./chat-input";
 import { MessageList } from "@/components/message-list";
 import { useGetMessages } from "@/features/messages/api/use-get-messages";
+import { usePanel } from "@/app/hooks/use-panel";
 
 interface ConversationProps {
   id: Id<"conversations">;
@@ -14,6 +15,8 @@ interface ConversationProps {
 
 export const Conversation = ({ id }: ConversationProps) => {
   const pageMemberId = usePageMemberId();
+  const { onOpenProfile } = usePanel();
+
   const { data: member, isLoading: memberLoading } = useGetMemberUser({
     memberId: pageMemberId,
   });
@@ -33,7 +36,11 @@ export const Conversation = ({ id }: ConversationProps) => {
   return (
     <div className="flex flex-col h-full">
       {/* conversation header */}
-      <Header name={member.user.name} image={member.user.image} />
+      <Header
+        onClick={() => onOpenProfile(pageMemberId)}
+        name={member.user.name}
+        image={member.user.image}
+      />
 
       {/* // message-list */}
       <MessageList

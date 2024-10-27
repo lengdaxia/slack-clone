@@ -15,11 +15,13 @@ import { useRouter } from "next/navigation";
 export const WorkspaceSwitcher = () => {
   const router = useRouter();
   const workspaceId = usePageWorkspaceId();
-  const [_open, setOpen] = useCreateWorkspaceModal();
+  const [open, setOpen] = useCreateWorkspaceModal();
+  console.log(open);
+
   const { data: workspace, isLoading: workspaceLoading } = useGetWorkspace({
     id: workspaceId,
   });
-  const { data: workspaces, isLoading: workspacesLoading } = useGetWorkspaces();
+  const { data: workspaces } = useGetWorkspaces();
 
   const filteredWorkspaces = workspaces?.filter(
     (workspace) => workspace?._id !== workspaceId

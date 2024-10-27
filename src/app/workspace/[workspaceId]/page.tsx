@@ -47,6 +47,9 @@ const WorkspaceIdPage = () => {
       setOpen(true);
     }
   }, [
+    currentMember,
+    workspace,
+    workspaceId,
     firstChannelId,
     open,
     setOpen,

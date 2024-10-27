@@ -4,16 +4,17 @@ import { usePageWorkspaceId } from "@/app/hooks/use-page-workspace-id";
 import { useGetWorkspace } from "@/features/workspaces/api/use-get-workspace";
 import { useState } from "react";
 import {
-  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
   CommandItem,
+  CommandInput,
+  CommandList,
 } from "@/components/ui/command";
-import { CommandInput, CommandList } from "cmdk";
 import { useGetChannels } from "@/features/channels/api/use-get-channels";
 import { useGetMemberUsers } from "@/features/members/api/use-get-members";
 import { useRouter } from "next/navigation";
+import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 
 export const Toolbar = () => {
   const router = useRouter();
@@ -48,8 +49,9 @@ export const Toolbar = () => {
         </Button>
 
         <CommandDialog open={searchOpen} onOpenChange={setSearchOpen}>
+          <DialogTitle className="hidden" />
+          <DialogDescription className="hidden" />
           <CommandInput
-            className="px-4 py-2 m-2"
             autoFocus
             placeholder="Search your channels and members.."
           />
@@ -57,14 +59,20 @@ export const Toolbar = () => {
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup heading="Channels">
               {channels?.map((channel) => (
-                <CommandItem onSelect={() => onChannelSelect(channel._id)}>
+                <CommandItem
+                  key={channel._id}
+                  onSelect={() => onChannelSelect(channel._id)}
+                >
                   {channel.name}
                 </CommandItem>
               ))}
             </CommandGroup>
             <CommandGroup heading="Members">
               {members?.map((member) => (
-                <CommandItem onSelect={() => onMemberSelect(member._id)}>
+                <CommandItem
+                  key={member._id}
+                  onSelect={() => onMemberSelect(member._id)}
+                >
                   {member.user.name}
                 </CommandItem>
               ))}

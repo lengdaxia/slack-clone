@@ -138,7 +138,7 @@ export const PreferencesModal = ({
               </DialogContent>
             </Dialog>
             <button
-              disabled={false}
+              disabled={isRemovingWorkspace}
               onClick={handleRemove}
               className="flex items-center gap-x-2 px-5 py-4 border bg-white rounded-lg hover:bg-gray-50 text-rose-600 cursor-pointer"
             >

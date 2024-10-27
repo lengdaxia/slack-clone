@@ -31,8 +31,9 @@ interface MemberProfileProps {
 export const MemberProfile = ({ memberId, onClose }: MemberProfileProps) => {
   const router = useRouter();
   const pageWorkspceId = usePageWorkspaceId();
-  const { data: currentMember, isLoading: currentMemberLoading } =
-    useCurrentMember({ workspaceId: pageWorkspceId });
+  const { data: currentMember } = useCurrentMember({
+    workspaceId: pageWorkspceId,
+  });
 
   const isSelf = currentMember?._id === memberId;
 

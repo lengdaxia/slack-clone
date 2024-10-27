@@ -37,7 +37,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
       })
       .finally(() => {
         setPending(false);
-        router.replace("/")
+        router.replace("/");
       });
   };
 
@@ -112,7 +112,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
           </Button>
 
           <p className="text-xs text-muted-foreground">
-            Don't have an account?
+            Don&apos;t have an account?
             <span
               onClick={() => setState("signUp")}
               className="text-sky-700 pl-1 hover:underline cursor-pointer"
