@@ -13,6 +13,7 @@ import { useConfirm } from "@/app/hooks/use-confirm";
 import { useToggleReaction } from "@/features/reactions/api/use-toggle-reaction";
 import { MessageReactions } from "./message-reactions";
 import { usePanel } from "@/app/hooks/use-panel";
+import { ThreadReplyIndicator } from "./thread-reply-indicator";
 
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
@@ -38,6 +39,7 @@ interface MessageProps {
   setEditingId: (id: Id<"messages"> | null) => void;
   hideThreadButton?: boolean;
   threadCount?: number;
+  threadName?: string;
   threadImage?: string;
   threadTimestamp?: number;
 }
@@ -59,6 +61,7 @@ export const Message = ({
   hideThreadButton,
   threadCount,
   threadImage,
+  threadName,
   threadTimestamp,
 }: MessageProps) => {
   const [ConfirmDialog, confirm] = useConfirm(
@@ -106,7 +109,7 @@ export const Message = ({
             onClose();
           }
         },
-        onError(error) {
+        onError() {
           toast.error("Failed to delete the message");
         },
       }
@@ -186,6 +189,14 @@ export const Message = ({
                 <ImageGallery images={[image]} />
                 <EditSpan />
                 <ReactionsSection />
+                {/* <ThreadIndicator /> */}
+                <ThreadReplyIndicator
+                  threadImage={threadImage}
+                  threadCount={threadCount}
+                  threadName={threadName}
+                  threadTimestamp={threadTimestamp}
+                  onClick={() => onOpenMessage(id)}
+                />
               </div>
             )}
           </div>
@@ -233,6 +244,14 @@ export const Message = ({
               />
               <EditSpan />
               <ReactionsSection />
+              {/* <ThreadIndicator /> */}
+              <ThreadReplyIndicator
+                threadImage={threadImage}
+                threadCount={threadCount}
+                threadName={threadName}
+                threadTimestamp={threadTimestamp}
+                onClick={() => onOpenMessage(id)}
+              />
             </div>
           )}
         </div>

@@ -23,7 +23,7 @@ export const ImageGallery = ({ images, onClick }: ImageGalleryProps) => {
           return null;
         }
         return (
-          <Dialog>
+          <Dialog key={index}>
             <DialogTrigger onClick={() => onClick?.(index)}>
               <div className="relative min-w-[60px] min-h-[60px] max-w-[300px] max-h-[300px] border rounded-lg my-2 cursor-zoom-in">
                 <img
