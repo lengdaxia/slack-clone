@@ -18,13 +18,11 @@ export const UserButton = () => {
   const router = useRouter();
 
   const handleSignOut = () => {
-    signOut()
-      .then(() => {
-        setTimeout(() => {
-          router.replace("/");
-        }, 50);
-      })
-      .finally(() => {});
+    signOut().then(() => {
+      setTimeout(() => {
+        router.replace("/");
+      }, 50);
+    });
   };
 
   if (isLoading) {
