@@ -30,9 +30,8 @@ export const get = query({
 });
 
 export const getPublicInfo = query({
-  args: {workspaceId: v.id("workspaces")},
+  args: { workspaceId: v.id("workspaces") },
   handler: async (ctx, args) => {
-    
     const userId = await getAuthUserId(ctx);
     if (!userId) {
       return null;
@@ -40,11 +39,11 @@ export const getPublicInfo = query({
     const member = await getUserMember(ctx, args.workspaceId, userId);
 
     const worksapce = await ctx.db.get(args.workspaceId);
-    
+
     return {
       name: worksapce?.name,
-      isMember: !!member
-    }
+      isMember: !!member,
+    };
   },
 });
 
@@ -126,16 +125,29 @@ export const remove = mutation({
     }
 
     // remove related members, channels, etc of the deleting workspace
-    const [members, channels] = await Promise.all([
-      await ctx.db
-        .query("members")
-        .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
-        .collect(),
-      await ctx.db
-        .query("channels")
-        .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
-        .collect(),
-    ]);
+    const [members, channels, messages, reactions, conversations] =
+      await Promise.all([
+        await ctx.db
+          .query("members")
+          .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
+          .collect(),
+        await ctx.db
+          .query("channels")
+          .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
+          .collect(),
+        await ctx.db
+          .query("messages")
+          .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
+          .collect(),
+        await ctx.db
+          .query("reactions")
+          .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
+          .collect(),
+        await ctx.db
+          .query("conversations")
+          .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
+          .collect(),
+      ]);
 
     // delete all workspace's user membership
     for (const member of members) {
@@ -145,6 +157,18 @@ export const remove = mutation({
     // delete workspace's channels
     for (const channel of channels) {
       await ctx.db.delete(channel._id);
+    }
+    // delete workspace's messages
+    for (const message of messages) {
+      await ctx.db.delete(message._id);
+    }
+    // delete workspace's reactions
+    for (const reaction of reactions) {
+      await ctx.db.delete(reaction._id);
+    }
+    // delete workspace's conversation
+    for (const conversation of conversations) {
+      await ctx.db.delete(conversation._id);
     }
 
     //finally remove worksapce entity from db

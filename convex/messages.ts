@@ -271,9 +271,23 @@ export const remove = mutation({
       throw new Error("UnAuthorized");
     }
 
-    // TODO: remove related images
-    // TODO: remove reactions
-    //
+    //remove related images
+    console.log("message.image: ", message.image);
+    if (message.image) {
+      await ctx.storage.delete(message.image!);
+    }
+
+    //remove reactions
+    const [reactions] = await Promise.all([
+      ctx.db
+        .query("reactions")
+        .withIndex("by_message_id", (q) => q.eq("messageId", args.id))
+        .collect(),
+    ]);
+
+    for (const reaction of reactions) {
+      await ctx.db.delete(reaction._id);
+    }
 
     await ctx.db.delete(args.id);
 

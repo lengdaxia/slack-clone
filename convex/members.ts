@@ -116,3 +116,96 @@ export const joinMember = mutation({
     return memberId;
   },
 });
+
+export const update = mutation({
+  args: {
+    id: v.id("members"),
+    role: v.union(v.literal("admin"), v.literal("member")),
+  },
+  handler: async (ctx, args) => {
+    const userId = await checkAndGetUserId(ctx);
+
+    const member = await ctx.db.get(args.id);
+
+    if (!member) {
+      throw new Error("Member not found");
+    }
+
+    const currentMember = await getUserMember(ctx, member.workspaceId, userId);
+
+    if (!currentMember || currentMember.role !== "admin") {
+      throw new Error("Unauthorized");
+    }
+
+    await ctx.db.patch(args.id, {
+      role: args.role,
+    });
+
+    return args.id;
+  },
+});
+
+export const remove = mutation({
+  args: {
+    id: v.id("members"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await checkAndGetUserId(ctx);
+
+    const member = await ctx.db.get(args.id);
+
+    if (!member) {
+      throw new Error("Member not found");
+    }
+
+    const currentMember = await getUserMember(ctx, member.workspaceId, userId);
+
+    if (!currentMember) {
+      throw new Error("Unauthorized");
+    }
+
+    if (member.role === "admin") {
+      throw new Error("Admin cannot be removed");
+    }
+
+    if (currentMember._id === args.id) {
+      throw new Error("Unauthorized");
+    }
+
+    const [messages, reactions, conversations] = await Promise.all([
+      ctx.db
+        .query("messages")
+        .withIndex("by_member_id", (q) => q.eq("memberId", args.id))
+        .collect(),
+      ctx.db
+        .query("reactions")
+        .withIndex("by_member_id", (q) => q.eq("memberId", args.id))
+        .collect(),
+      ctx.db
+        .query("conversations")
+        .filter((q) => q.eq(q.field("workspaceId"), member.workspaceId))
+        .filter((q) =>
+          q.or(
+            q.eq(q.field("senderId"), args.id),
+            q.eq(q.field("receiverId"), args.id)
+          )
+        )
+        .collect(),
+    ]);
+
+    for (const message of messages) {
+      await ctx.db.delete(message._id);
+    }
+    for (const react of reactions) {
+      await ctx.db.delete(react._id);
+    }
+
+    for (const conversation of conversations) {
+      await ctx.db.delete(conversation._id);
+    }
+
+    await ctx.db.delete(args.id);
+
+    return args.id;
+  },
+});
