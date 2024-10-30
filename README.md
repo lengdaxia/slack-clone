@@ -23,6 +23,10 @@
 
 ![home-0](./screenshots/home-0.png)
 
+## Entity relation diagram
+
+![schema](./screenshots/Slack-Schema.png)
+
 ## Start the project
 
 First, run the development server:
@@ -41,3 +45,8 @@ bun run dev
 3. Responsive UI for mobile and iPad
 4. Complete other features gradually
 5. ...
+
+## AUTH
+
+[google](https://console.cloud.google.com/welcome?project=slack-clone-production-439913)
+[github](https://github.com/settings/developers)
